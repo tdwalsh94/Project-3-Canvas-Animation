@@ -98,6 +98,26 @@ function drawSquare(square){
 		square.y += square.dy;
 }
 
+function drawTriangle(context, x, y, triangleWidth, triangleHeight, fillStyle){
+	var triangleWidth = Math.floor(Math.random() * 40);
+	var triangleHeight = Math.floor(Math.random() * 40);
+	
+	context.beginPath();
+	context.moveTo(x, y);
+	context.lineTo(x + triangleWidth / 2, y + triangleHeight);
+	context.lineTo(x - triangleWidth / 2, y + triangleHeight);
+	context.closePath();
+	context.fillStyle = triangle.color;
+	context.fill();
+	
+	if (triangle.x + triangle.dx > canvas.width || triangle.x + triangle.dx < 0)
+		triangle.dx = -triangle.dx;
+	if (triangle.y + triangle.dy > canvas.height || triangle.y + triangle.dy < 0)
+		triangle.dy = -triangle.dy;
+		triangle.x += triangle.dx;
+		triangle.y += triangle.dy;
+}
+
 //functions for moving shapes
 
 function moveCircles(){
@@ -121,8 +141,8 @@ function moveSquares(){
 	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
 	context.fillRect(0,0, canvas.width, canvas.height);
 	
-	for(var i=0; i < shape.length; i++){
-		var sq = shape[i];
+	for(var i=0; i < square.length; i++){
+		var sq = square[i];
 	
 		sq.x += sq.vx;
 		sq.y += sq.vy;
@@ -131,6 +151,23 @@ function moveSquares(){
 		if(sq.y < -50) sq.y = canvas.height + 50;
 		if(sq.x > canvas.width + 50) sq.x = -50;
 		if(sq.y > canvas.height + 50) sq.y = -50;
+	}
+}
+
+function moveTriangles(){
+	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
+	context.fillRect(0,0, canvas.width, canvas.height);
+	
+	for(var i=0; i < triangle.length; i++){
+		var tri = triangle[i];
+	
+		tri.x += tri.vx;
+		tri.y += tri.vy;
+		
+		if(tri.x < -50) tri.x = canvas.width + 50;
+		if(tri.y < -50) tri.y = canvas.height + 50;
+		if(tri.x > canvas.width + 50) tri.x = -50;
+		if(tri.y > canvas.height + 50) tri.y = -50;
 	}
 }
 
