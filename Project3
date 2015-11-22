@@ -11,7 +11,7 @@ body {
 var canvas;
 var context;
 var allShapes = [];
-var shapes = ['circle', 'square', 'triangle'];
+var shapes = ['circle', 'square', 'triangle', 'heart'];
 
 function Shape(x, y, color, shape){
 	this.x = x;
@@ -60,6 +60,9 @@ function handleClick(x, y){
 		}
 		else if (shape == 'triangle'){
 			drawTriangle(canvas, context, color);
+		}
+		else if (shape == 'heart'){
+			drawHeart(canvas, context, color);
 		};
 
 		allShapes.push(new Shape(x, y, color, shape));
@@ -121,6 +124,26 @@ function drawTriangle(context, x, y, triangleWidth, triangleHeight, fillStyle){
 		triangle.y += triangle.dy;
 }
 
+function drawHeart(heart){
+	context.beginPath();
+    context.moveTo(75,40);
+    context.bezierCurveTo(75,37,70,25,50,25);
+    context.bezierCurveTo(20,25,20,62.5,20,62.5);
+    context.bezierCurveTo(20,80,40,102,75,120);
+    context.bezierCurveTo(110,102,130,80,130,62.5);
+    context.bezierCurveTo(130,62.5,130,25,100,25);
+    context.bezierCurveTo(85,25,75,37,75,40);
+    context.fillStyle = heart.color;
+    context.fill();
+
+    if (heart.x + heart.dx > canvas.width || heart.x + heart.dx < 0)
+		heart.dx = -heart.dx;
+	if (heart.y + heart.dy > canvas.height || heart.y + heart.dy < 0)
+		heart.dy = -heart.dy;
+		heart.x += heart.dx;
+		heart.y += heart.dy;
+}
+
 //functions for moving shapes
 
 function moveCircles(){
@@ -137,7 +160,7 @@ function moveCircles(){
 		if(c.y < -50) c.y = canvas.height + 50;
 		if(c.x > canvas.width + 50) c.x = -50;
 		if(c.y > canvas.height + 50) c.y = -50;
-	}
+	};
 }
 
 function moveSquares(){
@@ -154,7 +177,7 @@ function moveSquares(){
 		if(sq.y < -50) sq.y = canvas.height + 50;
 		if(sq.x > canvas.width + 50) sq.x = -50;
 		if(sq.y > canvas.height + 50) sq.y = -50;
-	}
+	};
 }
 
 function moveTriangles(){
@@ -162,16 +185,33 @@ function moveTriangles(){
 	context.fillRect(0,0, canvas.width, canvas.height);
 	
 	for(var i=0; i < triangle.length; i++){
-		var tri = triangle[i];
+		var t = triangle[i];
 	
-		tri.x += tri.vx;
-		tri.y += tri.vy;
+		t.x += t.vx;
+		t.y += t.vy;
 		
-		if(tri.x < -50) tri.x = canvas.width + 50;
-		if(tri.y < -50) tri.y = canvas.height + 50;
-		if(tri.x > canvas.width + 50) tri.x = -50;
-		if(tri.y > canvas.height + 50) tri.y = -50;
-	}
+		if(t.x < -50) t.x = canvas.width + 50;
+		if(t.y < -50) t.y = canvas.height + 50;
+		if(t.x > canvas.width + 50) t.x = -50;
+		if(t.y > canvas.height + 50) t.y = -50;
+	};
+}
+
+function moveHearts(){
+	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
+	context.fillRect(0,0, canvas.width, canvas.height);
+	
+	for(var i=0; i < heart.length; i++){
+		var h = heart[i];
+	
+		h.x += h.vx;
+		h.y += h.vy;
+		
+		if(h.x < -50) h.x = canvas.width + 50;
+		if(h.y < -50) h.y = canvas.height + 50;
+		if(h.x > canvas.width + 50) h.x = -50;
+		if(h.y > canvas.height + 50) h.y = -50;
+	};
 }
 
 //this function is to set canvas width and height to be the same as the browsers width and height
