@@ -48,7 +48,7 @@ function handleClick(x, y){
 	}
 	fillBackgroundColor();
 	if(!found){
-		var colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'white', 'pink'];
+		var colors = ['Red', 'Salmon', 'Khaki', 'OrangeRed', 'Coral', 'LightSalmon', 'white', 'LightPink', 'Gold', 'PeachPuff'];
 		var color = colors[Math.floor(Math.random()*colors.length)];
 		var shape = shapes[Math.floor(Math.random()*shapes.length)];
 
