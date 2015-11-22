@@ -57,6 +57,9 @@ function handleClick(x, y){
 		}
 		else if (shape == 'square'){
 			drawSquare(canvas, context, color);		
+		}
+		else if (shape == 'triangle'){
+			drawTriangle(canvas, context, color);
 		};
 
 		allShapes.push(new Shape(x, y, color, shape));
