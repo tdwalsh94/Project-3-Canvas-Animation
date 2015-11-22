@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+<title>Project 3</title>
+<style>
+body {
+	font-family: Verdana, Helvetica, sans-serif;
+}
+</style>
+<script>
+var canvas;
+var context;
+var allShapes = [];
+var shapes = ['circle', 'square', 'triangle'];
+
+function Shape(x, y, color, shape){
+	this.x = x;
+	this.y = y;
+	this.color = color;
+	this.shape = shape;
+	this.dx = Math.random()*4-2;
+	this.dy = Math.random()*4-2;
+}
+
+function init(){
+	canvas = document.getElementById('canvas');
+	context = canvas.getContext('2d');
+	
+	window.addEventListener('resize', resizeCanvas, false);
+	window.addEventListener('orientationchange', resizeCanvas, false);
+	resizeCanvas();
+	
+	canvas.onclick = function(event){
+		handleClick(event.clientX, event.clientY);
+		
+	};
+	timer = setInterval(resizeCanvas, 30);
+}
+
+function handleClick(x, y){
+	var found = false;
+	for(var i = 0; i < allShapes.length; i++){
+		d = Math.sqrt((allShapes[i].x - x)*(allShapes[i].x - x) + (allShapes[i].y - y)*(allShapes[i].y - y));
+		if(d <= 30){
+			allShapes.splice(i, 1);
+			found = true;
+		}
+	}
+	fillBackgroundColor();
+	if(!found){
+		var colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'white', 'pink'];
+		var color = colors[Math.floor(Math.random()*colors.length)];
+		var shape = shapes[Math.floor(Math.random()*shapes.length)];
+
+		if (shape == 'circle'){
+			drawCircle(canvas, context, color);
+		}
+		else if (shape == 'square'){
+			drawSquare(canvas, context, color);		
+		};
+
+		allShapes.push(new Shape(x, y, color, shape));
+	}
+	for(var i = 0; i < allShapes.length; i++){
+		drawCircle(allShapes[i]);
+	}
+}
+
+//functions for drawing shapes
+
+function drawCircle(circle){
+	context.beginPath();
+	context.arc(circle.x, circle.y, 30, 0, degreesToRadians(360), true)
+	context.fillStyle = circle.color;
+	context.fill();
+	
+	if (circle.x + circle.dx > canvas.width || circle.x + circle.dx < 0)
+		circle.dx = -circle.dx;
+	if (circle.y + circle.dy > canvas.height || circle.y + circle.dy < 0)
+		circle.dy = -circle.dy;
+		circle.x += circle.dx;
+		circle.y += circle.dy;
+}
+
+
+function drawSquare(square){
+	var w = Math.floor(Math.random() * 40);
+	
+	context.fillRect(square.x, square.y, square.w, square.w);
+	context.fillStyle = square.color;
+	context.fill();
+	
+	if (square.x + square.dx > canvas.width || square.x + square.dx < 0)
+		square.dx = -square.dx;
+	if (square.y + square.dy > canvas.height || square.y + square.dy < 0)
+		square.dy = -square.dy;
+		square.x += square.dx;
+		square.y += square.dy;
+}
+
+//functions for moving shapes
+
+function moveCircles(){
+	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
+	context.fillRect(0,0, canvas.width, canvas.height);
+	
+	for(var i=0; i < circle.length; i++){
+		var c = circle[i];
+	
+		c.x += c.vx;
+		c.y += c.vy;
+		
+		if(c.x < -50) c.x = canvas.width + 50;
+		if(c.y < -50) c.y = canvas.height + 50;
+		if(c.x > canvas.width + 50) c.x = -50;
+		if(c.y > canvas.height + 50) c.y = -50;
+	}
+}
+
+function moveSquares(){
+	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
+	context.fillRect(0,0, canvas.width, canvas.height);
+	
+	for(var i=0; i < shape.length; i++){
+		var sq = shape[i];
+	
+		sq.x += sq.vx;
+		sq.y += sq.vy;
+		
+		if(sq.x < -50) sq.x = canvas.width + 50;
+		if(sq.y < -50) sq.y = canvas.height + 50;
+		if(sq.x > canvas.width + 50) sq.x = -50;
+		if(sq.y > canvas.height + 50) sq.y = -50;
+	}
+}
+
+//this function is to set canvas width and height to be the same as the browsers width and height
+function resizeCanvas(){
+	canvas.width = window.innerWidth - 20;
+	canvas.height = window.innerHeight - 20;
+	fillBackgroundColor();
+	for(var i = 0; i < allShapes.length; i++){
+		drawCircle(allShapes[i]);
+	}
+}
+
+function fillBackgroundColor(){
+	context.fillStyle = 'black';
+	context.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function degreesToRadians(degrees){
+	return (degrees * Math.PI)/180;
+}
+
+window.onload = init;
+</script>
+</head>
+<body>
+<canvas id='canvas' width=500 height=500></canvas>
+</body>
+</html>
