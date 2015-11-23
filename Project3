@@ -5,6 +5,9 @@
 <style>
 body {
 	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 26pt;
+	color: #FF7F50;
+	background: #000000;
 }
 </style>
 <script>
@@ -95,7 +98,7 @@ function drawCircle(circle){
 function drawSquare(square){
 	var w = Math.floor(Math.random() * 40);
 	
-	context.fillRect(square.x, square.y, square.w, square.w);
+	context.fillRect(square.x, square.y, w, w);
 	context.fillStyle = square.color;
 	context.fill();
 	
@@ -172,6 +175,8 @@ function drawPentagon(pentagon){
 function moveCircles(){
 	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
 	context.fillRect(0,0, canvas.width, canvas.height);
+
+	context.globalCompositeOperation = 'xor';
 	
 	for(var i=0; i < circle.length; i++){
 		var c = circle[i];
@@ -189,6 +194,8 @@ function moveCircles(){
 function moveSquares(){
 	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
 	context.fillRect(0,0, canvas.width, canvas.height);
+
+	context.globalCompositeOperation = 'xor';
 	
 	for(var i=0; i < square.length; i++){
 		var sq = square[i];
@@ -206,6 +213,8 @@ function moveSquares(){
 function moveTriangles(){
 	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
 	context.fillRect(0,0, canvas.width, canvas.height);
+
+	context.globalCompositeOperation = 'xor';
 	
 	for(var i=0; i < triangle.length; i++){
 		var t = triangle[i];
@@ -223,6 +232,8 @@ function moveTriangles(){
 function moveHearts(){
 	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
 	context.fillRect(0,0, canvas.width, canvas.height);
+
+	context.globalCompositeOperation = 'xor';
 	
 	for(var i=0; i < heart.length; i++){
 		var h = heart[i];
@@ -237,9 +248,12 @@ function moveHearts(){
 	};
 }
 
-function moveHearts(){
+function movePentagon(){
+	context.globalCompositeOperation = 'source-over'; 
 	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
 	context.fillRect(0,0, canvas.width, canvas.height);
+
+	context.globalCompositeOperation = 'xor';
 	
 	for(var i=0; i < pentagon.length; i++){
 		var p = pentagon[i];
@@ -277,6 +291,7 @@ window.onload = init;
 </script>
 </head>
 <body>
+	<marquee behavior="alternate">Click to add shapes, click again to remove!</marquee>
 <canvas id='canvas' width=500 height=500></canvas>
 </body>
 </html>
