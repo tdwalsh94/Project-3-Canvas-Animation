@@ -1,0 +1,209 @@
+<!doctype html>
+<html>
+<head>
+<title>Responsive Interactive Canvas</title>
+<style>
+body {
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 26pt;
+	color: #FF7F50;
+	background: #000000;
+}
+</style>
+<script>
+	  var canvas;
+	  var context;
+	  var shapes = []
+	  var timer;
+	  var possibleShapes = ['drop','bunny','square','circle','cat', 'text'];
+	  
+	  function Shape(x, y, color) {
+		this.x = x;
+		this.y = y;
+		this.size = Math.random()*30+16;
+		this.dx = Math.random()*4-2;
+		this.dy = Math.random()*4-2;
+		this.color = color;
+		this.shape = possibleShapes[Math.floor(Math.random()*possibleShapes.length)];
+	  }
+      function init() {
+        canvas = document.getElementById('canvas');
+        context = canvas.getContext("2d");
+ 
+        window.addEventListener('resize', resizeCanvas, false);
+        window.addEventListener('orientationchange', resizeCanvas, false);
+        resizeCanvas();
+		canvas.onclick = function(event) {
+			handleClick(event.clientX, event.clientY);
+		};
+		timer = setInterval(resizeCanvas, 20);
+      }
+	  
+function handleClick(x, y){
+	var found = false;
+	for(var i = 0; i < shapes.length; i++){
+		d = Math.sqrt((shapes[i].x - x)*(shapes[i].x - x) + (shapes[i].y - y)*(shapes[i].y - y));
+		if(d <= 30){
+			shapes.splice(i, 1);
+			found = true;
+		}
+	}
+	fillBackgroundColor();
+	if(!found){
+		var colors = ['Red', 'Salmon', 'Khaki', 'OrangeRed', 'Coral', 'LightSalmon', 'white', 'LightPink', 'Gold', 'PeachPuff'];
+		var color = colors[Math.floor(Math.random()*colors.length)];
+		var shape = shapes[Math.floor(Math.random()*shapes.length)];
+
+		if (shape == 'circle'){
+			drawCircle(canvas, context, color);
+		}
+		else if (shape == 'square'){
+			drawSquare(canvas, context, color);		
+		}
+		else if (shape == 'bunny'){
+			drawBunny(canvas, context, color);
+		}
+		else if (shape == 'cat'){
+			drawCat(canvas, context, color);
+		}
+		else if (shape == 'drop'){
+			drawDrop(canvas, context, color);
+		} 
+		else if (shape == 'text'){
+			drawText(canvas, context, color)
+		};
+		shapes.push(new Shape(x, y, color, shape));
+	}
+}
+	  
+	  function drawCircle(circle) {
+		 context.beginPath();
+		 context.arc(circle.x, circle.y, circle.size, 0, degreesToRadians(360), true);
+		 context.fillStyle = circle.color;
+		 context.fill();
+	  }
+	  function drawSquare(square) {
+		context.beginPath();
+		context.fillStyle = square.color;
+		context.fillRect(square.x, square.y, square.size, square.size);
+      }	 
+	  function drawBunny(bunny) {
+		context.beginPath();
+		context.arc(bunny.x, bunny.y, 25, 0, degreesToRadians(360), true);
+		context.fillStyle = bunny.color;
+		context.fill();
+
+		context.beginPath();
+		context.arc(bunny.x, bunny.y, 2, 0, degreesToRadians(360), true);
+		context.fillStyle = 'black';
+		context.fill();
+
+		context.beginPath();
+		context.moveTo(bunny.x-10, bunny.y-40);
+		context.bezierCurveTo(bunny.x+10, bunny.y+10, bunny.x-5, bunny.y+5, bunny.x-40, bunny.y-50);
+		context.closePath();
+		context.fillStyle = bunny.color;
+		context.fill();
+        
+       	context.beginPath();
+		context.moveTo(bunny.x+10, bunny.y-40);
+		context.bezierCurveTo(bunny.x-10, bunny.y+10, bunny.x+5, bunny.y-5, bunny.x+40, bunny.y-50);
+		context.closePath();
+		context.fillStyle = bunny.color;
+		context.fill();
+	  }
+
+	  function drawCat(cat) {
+		 context.beginPath();
+		 context.arc(cat.x, cat.y, 25, 0, degreesToRadians(360), true);
+		 context.fillStyle = cat.color;
+		 context.fill();
+
+		 context.moveTo(cat.x-10, cat.y-40);
+		 context.lineTo(cat.x-25, cat.y);  //B
+		 context.lineTo(cat.x+5, cat.y);
+		 context.closePath();
+		 context.fillStyle = cat.color;
+		 context.fill();
+
+		 context.moveTo(cat.x+10, cat.y-40);
+		 context.lineTo(cat.x+25, cat.y);
+		 context.lineTo(cat.x-5, cat.y);
+		 context.closePath();
+		 context.fillStyle = cat.color;
+		 context.fill();
+
+		context.beginPath();
+		context.arc(cat.x, cat.y, 2, 0, degreesToRadians(360), true);
+		context.fillStyle = 'black';
+		context.fill();
+	  }
+
+	  function drawDrop(drop) {
+		    context.beginPath();
+			context.lineJoin = 'miter';
+			context.moveTo(drop.x, drop.y);
+			context.arc(drop.x, drop.y+68, 34.5, 5.75, 3.66, false);
+			context.quadraticCurveTo(drop.x-3.5, drop.y+15, drop.x, drop.y);
+			context.closePath();
+			context.lineWidth = 2;
+			context.fillStyle = drop.color;
+			context.fill();
+	  }
+	  
+	  function drawText(text) {
+		context.fillStyle = text.color;
+		context.font = '.5em sans-serif';
+		context.fillText('It\'s raining cats & bunnies!', text.x, text.y);
+      }	 
+	  
+	  function drawTitle() {
+		context.fillStyle = 'white';
+		context.font = '1em serif';
+		context.textAlign = 'right';
+		context.fillText('Click to add, click again to delete.', canvas.width-40, canvas.height-20);
+	}
+      function resizeCanvas() {
+        canvas.width = window.innerWidth-20;
+        canvas.height = window.innerHeight-20;
+		fillBackgroundColor();
+		for (var i=0; i<shapes.length; i++) {
+			if (shapes[i].shape == 'square') {
+				drawSquare(shapes[i]);
+			} else if (shapes[i].shape == 'circle') {
+				drawCircle(shapes[i]);
+			} else if (shapes[i].shape == 'bunny') {
+				drawBunny(shapes[i]);
+			} else if (shapes[i].shape == 'drop') {
+				drawDrop(shapes[i]);
+			} else if (shapes[i].shape == 'cat') {
+				drawCat(shapes[i]);
+			} else if (shapes[i].shape == 'text') {
+				drawText(shapes[i])
+			};
+			
+			if (shapes[i].x + shapes[i].dx > canvas.width || shapes[i].x + shapes[i].dx < 0)
+				shapes[i].dx = -shapes[i].dx;
+			if (shapes[i].y + shapes[i].dy > canvas.height || shapes[i].y + shapes[i].dy < 0)
+				shapes[i].dy = -shapes[i].dy;
+				shapes[i].x += shapes[i].dx;
+				shapes[i].y += shapes[i].dy;
+		}
+		drawTitle();		 
+      }
+	  function fillBackgroundColor() {
+		 //var colors = ["white", "yellow", "blue", "red"];
+		 //var bgColor = colors[Math.floor(Math.random() * colors.length)];
+		 context.fillStyle = 'black';
+		 context.fillRect(0, 0, canvas.width, canvas.height);
+	}
+	function degreesToRadians(degrees) {
+		//converts from degrees to radians and returns
+		return (degrees * Math.PI)/180;
+	}
+	window.onload = init;
+</script>
+</head>
+<body>
+<canvas id='canvas' width=500 height=500></canvas>
+</body>	  

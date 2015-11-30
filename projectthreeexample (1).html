@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+<title>Responsive Interactive Canvas</title>
+<script>
+	  var canvas;
+	  var context;
+	  var shapes = []
+	  var timer;
+	  var timerTwo;
+	  var possibleShapes = ['drop','triangle','square','circle','cloud'];
+	  function Shape(x, y, color) {
+		this.x = x;
+		this.y = y;
+		this.size = Math.random()*20+5;
+		this.dx = Math.random()*4-2;
+		this.dy = Math.random()*4-2;
+		this.color = color;
+		this.shape = possibleShapes[Math.floor(Math.random()*possibleShapes.length)];
+	  }
+      function init() {
+        canvas = document.getElementById('canvas');
+        context = canvas.getContext("2d");
+ 
+        window.addEventListener('resize', resizeCanvas, false);
+        window.addEventListener('orientationchange', resizeCanvas, false);
+        resizeCanvas();
+		canvas.onclick = function(event) {
+			handleClick(event.clientX, event.clientY);
+		};
+		timer = setInterval(resizeCanvas, 20);
+		timerTwo = setInterval(newShape, 200);
+      }
+	  function newShape() {
+		var x = Math.random() * canvas.width;
+		var y = Math.random() * canvas.height;
+		var colors = ["red", "green", "blue", "orange", "purple", "yellow"];
+		var color = colors[Math.floor(Math.random()*colors.length)];
+		shapes.push(new Shape(x, y, color));
+		
+	  }
+	  function drawCircle(circle) {
+		 context.beginPath();
+		 context.arc(circle.x, circle.y, circle.size, 0, degreesToRadians(360), true);
+		 context.fillStyle = circle.color;
+		 context.fill();
+	  }
+	  function drawSquare(square) {
+		context.beginPath();
+		context.fillStyle = square.color;
+		context.fillRect(square.x, square.y, square.size, square.size);
+      }	 
+	  function drawTriangle(triangle) {
+		context.beginPath();
+		context.fillStyle = triangle.color;
+		context.moveTo(triangle.x+triangle.size,triangle.y);
+		context.lineTo(triangle.x,triangle.y);
+		context.lineTo(triangle.x,triangle.y+triangle.size);
+	    context.closePath();
+        context.fill();
+	  }
+
+	  function drawCloud(cloud) {
+		 context.beginPath();
+		 context.moveTo(cloud.x, cloud.y);
+		 context.bezierCurveTo(cloud.x-40, cloud.y+20, cloud.x-40, cloud.y+70, cloud.x+60, cloud.y+70);
+		  context.bezierCurveTo(cloud.x+80, cloud.y+100, cloud.x+170, cloud.y+100, cloud.x+170, cloud.y+70);
+		  context.bezierCurveTo(cloud.x+250, cloud.y+70, cloud.x+250, cloud.y+40, cloud.x+210, cloud.y+20);
+		  context.bezierCurveTo(cloud.x+260, cloud.y-40, cloud.x+200, cloud.y+50, cloud.x+170, cloud.y-30);
+		  context.bezierCurveTo(cloud.x+150, cloud.y-75, cloud.x+80, cloud.y-60, cloud.x+80, cloud.y-30);
+		  context.bezierCurveTo(cloud.x+30, cloud.y-75, cloud.x-20, cloud.y-60, cloud.x, cloud.y);
+
+		  // complete custom shape
+		  context.closePath();
+		  context.lineWidth = 5;
+		  context.strokeStyle = cloud.color;
+		  context.stroke();
+	  }
+
+	  function drawDrop(drop) {
+		    context.beginPath();
+			context.lineJoin = 'miter';
+			context.moveTo(drop.x, drop.y);
+			context.arc(drop.x, drop.y+68, 34.5, 5.75, 3.66, false);
+			context.quadraticCurveTo(drop.x-3.5, drop.y+15, drop.x, drop.y);
+			context.closePath();
+			context.lineWidth = 2;
+			context.fillStyle = drop.color;
+			context.fill();
+	  }
+	  function drawText() {
+		context.fillStyle = 'white';
+		context.font = 'bold 2em sans-serif';
+		context.textAlign = 'right';
+		context.fillText('Art?', canvas.width-40, canvas.height-40);
+	}
+      function resizeCanvas() {
+        canvas.width = window.innerWidth-20;
+        canvas.height = window.innerHeight-20;
+		fillBackgroundColor();
+		for (var i=0; i<shapes.length; i++) {
+			if (shapes[i].shape == 'square') {
+				drawSquare(shapes[i]);
+			} else if (shapes[i].shape == 'circle') {
+				drawCircle(shapes[i]);
+			} else if (shapes[i].shape == 'triangle') {
+				drawTriangle(shapes[i]);
+			} else if (shapes[i].shape == 'drop') {
+				drawDrop(shapes[i]);
+			} else if (shapes[i].shape == 'cloud') {
+				drawCloud(shapes[i]);
+			}
+			if (shapes[i].x + shapes[i].dx > canvas.width || shapes[i].x + shapes[i].dx < 0)
+				shapes[i].dx = -shapes[i].dx;
+			if (shapes[i].y + shapes[i].dy > canvas.height || shapes[i].y + shapes[i].dy < 0)
+				shapes[i].dy = -shapes[i].dy;
+				shapes[i].x += shapes[i].dx;
+				shapes[i].y += shapes[i].dy;
+		}
+		drawText();		 
+      }
+	  function fillBackgroundColor() {
+		 //var colors = ["white", "yellow", "blue", "red"];
+		 //var bgColor = colors[Math.floor(Math.random() * colors.length)];
+		 context.fillStyle = 'black';
+		 context.fillRect(0, 0, canvas.width, canvas.height);
+	}
+	function degreesToRadians(degrees) {
+		//converts from degrees to radians and returns
+		return (degrees * Math.PI)/180;
+	}
+	window.onload = init;
+</script>
+</head>
+<body>
+<canvas id='canvas' width=500 height=500></canvas>
+</body>	  
